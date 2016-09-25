@@ -1,44 +1,44 @@
 "use strict"
 
 function statement(customer, movies) {
-  let totalAmount = 0;
-  let frequentRenterPoints = 0;
+  let totalCost = 0;
+  let totalFrequentRenterPoints = 0;
   let result = `Rental Record for ${customer.name}\n`;
-  for (let r of customer.rentals) {
-    let movie = movies[r.movieID];
-    let thisAmount = 0;
+  for (let rental of customer.rentals) {
+    let movie = movies[rental.movieID];
+    let currentMovieCost = 0;
 
     // determine amount for each movie
-    switch (movie.code) {
+    switch (movie.type) {
       case "regular":
-        thisAmount = 2;
-        if (r.days > 2) {
-          thisAmount += (r.days - 2) * 1.5;
+        currentMovieCost = 2;
+        if (rental.days > 2) {
+          currentMovieCost += (rental.days - 2) * 1.5;
         }
         break;
       case "new":
-        thisAmount = r.days * 3;
+        currentMovieCost = rental.days * 3;
         break;
-      case "childrens":
-        thisAmount = 1.5;
-        if (r.days > 3) {
-          thisAmount += (r.days - 3) * 1.5;
+      case "children":
+        currentMovieCost = 1.5;
+        if (rental.days > 3) {
+          currentMovieCost += (rental.days - 3) * 1.5;
         }
         break;
     }
 
     //add frequent renter points
-    frequentRenterPoints++;
+    totalFrequentRenterPoints++;
     // add bonus for a two day new release rental
-    if (movie.code === "new" && r.days > 2) frequentRenterPoints++;
+    if (movie.type === "new" && rental.days > 2) totalFrequentRenterPoints++;
 
     //print figures for this rental
-    result += `\t${movie.title}\t${thisAmount}\n`;
-    totalAmount += thisAmount;
+    result += `\t${movie.title}\t${currentMovieCost}\n`;
+    totalCost += currentMovieCost;
   }
   // add footer lines
-  result += `Amount owed is ${totalAmount}\n`;
-  result += `You earned ${frequentRenterPoints} frequent renter points\n`;
+  result += `Amount owed is ${totalCost}\n`;
+  result += `You earned ${totalFrequentRenterPoints} frequent renter points\n`;
 
   return result;
 }
@@ -57,11 +57,11 @@ let customer = {
 let movies = {
   "F001": {
     "title": "Ran",
-    "code": "regular"
+    "type": "regular"
   },
   "F002": {
     "title": "Trois Couleurs: Bleu",
-    "code": "regular"
+    "type": "regular"
   },
   // etc
 }
