@@ -1,4 +1,4 @@
-"use strict"
+"use strict";
 
 function statement(customer, movies) {
   let totalCost = 0;
@@ -52,7 +52,7 @@ let customer = {
     "movieID": "F002",
     "days": 1
   }, ]
-}
+};
 
 let movies = {
   "F001": {
@@ -64,6 +64,6 @@ let movies = {
     "type": "regular"
   },
   // etc
-}
+};
 
-console.log(statement(customer, movies))
+console.log(statement(customer, movies));
