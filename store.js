@@ -1,19 +1,22 @@
 "use strict";
 
 function statement(customer, movies) {
-    let totalCost = 0;
+
     let totalFrequentRenterPoints = 0;
+    for (let rental of customer.rentals) {
+        totalFrequentRenterPoints += getFrequentRenterPoints(rental);
+    }
+
     let result = `Rental Record for ${customer.name}\n`;
     for (let rental of customer.rentals) {
-        let movie = findMovie(rental);
-        let currentMovieCost = getMovieCost(rental);
-
-        totalFrequentRenterPoints += getFrequentRenterPoints(rental);
-
-        //print figures for this rental
-        result += `\t${movie.title}\t${currentMovieCost}\n`;
-        totalCost += currentMovieCost;
+        result += `\t${findMovie(rental).title}\t${getMovieCost(rental)}\n`;
     }
+
+    let totalCost = 0;
+    for (let rental of customer.rentals) {
+        totalCost += getMovieCost(rental);
+    }
+
     // add footer lines
     result += `Amount owed is ${totalCost}\n`;
     result += `You earned ${totalFrequentRenterPoints} frequent renter points\n`;
