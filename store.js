@@ -12,13 +12,8 @@ function statement(customer, movies) {
         result += `\t${findMovie(rental).title}\t${getMovieCost(rental)}\n`;
     }
 
-    let totalCost = 0;
-    for (let rental of customer.rentals) {
-        totalCost += getMovieCost(rental);
-    }
-
     // add footer lines
-    result += `Amount owed is ${totalCost}\n`;
+    result += `Amount owed is ${getTotalCost(customer)}\n`;
     result += `You earned ${totalFrequentRenterPoints} frequent renter points\n`;
 
     return result;
@@ -57,6 +52,14 @@ function statement(customer, movies) {
 
         // add bonus for a two day new release rental
         return (movie.type === "new" && rental.days > 2) ? 2 : 1;
+    }
+
+    function getTotalCost(customer) {
+        let totalCost = 0;
+        for (let rental of customer.rentals) {
+            totalCost += getMovieCost(rental);
+        }
+        return totalCost;
     }
 }
 
