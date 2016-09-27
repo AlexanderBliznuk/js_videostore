@@ -6,11 +6,7 @@ function statement(customer, movies) {
         result += `\t${findMovie(rental).title}\t${getMovieCost(rental)}\n`;
     }
 
-    // add footer lines
-    result += `Amount owed is ${getTotalCost(customer)}\n`;
-    result += `You earned ${getTotalFrequentRentalPoints(customer)} frequent renter points\n`;
-
-    return result;
+    return addFooterLines(result);
 
     function findMovie(rental) {
         return movies[rental.movieID];
@@ -62,6 +58,12 @@ function statement(customer, movies) {
             totalFrequentRenterPoints += getFrequentRenterPoints(rental);
         }
         return totalFrequentRenterPoints;
+    }
+
+    function addFooterLines(msg) {
+        msg += `Amount owed is ${getTotalCost(customer)}\n`;
+        msg += `You earned ${getTotalFrequentRentalPoints(customer)} frequent renter points\n`;
+        return msg;
     }
 }
 
