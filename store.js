@@ -29,6 +29,27 @@ Rental.prototype.getFrequentRenterPoints = function() {
     // add bonus for a two day new release rental
     return (this.getMovie().getType() === "new" && this.getDays() > 2) ? 2 : 1;
 };
+Rental.prototype.getCost = function() {
+    let cost = 0;
+    switch (this.getMovie().getType()) {
+        case "regular":
+            cost = 2;
+            if (this.getDays() > 2) {
+                cost += (this.getDays() - 2) * 1.5;
+            }
+            break;
+        case "new":
+            cost = this.getDays() * 3;
+            break;
+        case "children":
+            cost = 1.5;
+            if (this.getDays() > 3) {
+                cost += (this.getDays() - 3) * 1.5;
+            }
+            break;
+    }
+    return cost;
+};
 
 function Movie(data) {
     this._data = data;
@@ -44,39 +65,15 @@ function statement(customerArg, moviesAvailable) {
     let customer = new Customer(customerArg, moviesAvailable);
     let result = `Rental Record for ${customer.getName()}\n`;
     for (let rental of customer.getRentals()) {
-        result += `\t${rental.getMovie().getTitle()}\t${getMovieCost(rental)}\n`;
+        result += `\t${rental.getMovie().getTitle()}\t${rental.getCost()}\n`;
     }
 
     return addFooterLines(result);
 
-    function getMovieCost(rental) {
-        let cost = 0;
-        let movie = rental.getMovie();
-        // determine amount for each movie
-        switch (movie.getType()) {
-            case "regular":
-                cost = 2;
-                if (rental.getDays() > 2) {
-                    cost += (rental.getDays() - 2) * 1.5;
-                }
-                break;
-            case "new":
-                cost = rental.getDays() * 3;
-                break;
-            case "children":
-                cost = 1.5;
-                if (rental.getDays() > 3) {
-                    cost += (rental.getDay() - 3) * 1.5;
-                }
-                break;
-        }
-        return cost;
-    }
-
     function getTotalCost(customer) {
         let totalCost = 0;
         for (let rental of customer.getRentals()) {
-            totalCost += getMovieCost(rental);
+            totalCost += rental.getCost();
         }
         return totalCost;
     }
