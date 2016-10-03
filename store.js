@@ -21,17 +21,27 @@ Rental.prototype.getMovieID = function() {
     return this._data.movieID;
 };
 
+function Movie(data) {
+    this._data = data;
+}
+Movie.prototype.getType = function() {
+    return this._data.type;
+};
+Movie.prototype.getTitle = function() {
+    return this._data.title;
+};
+
 function statement(customerArg, movies) {
     let customer = new Customer(customerArg);
     let result = `Rental Record for ${customer.getName()}\n`;
     for (let rental of customer.getRentals()) {
-        result += `\t${findMovie(rental).title}\t${getMovieCost(rental)}\n`;
+        result += `\t${findMovie(rental).getTitle()}\t${getMovieCost(rental)}\n`;
     }
 
     return addFooterLines(result);
 
     function findMovie(rental) {
-        return movies[rental.getMovieID()];
+        return new Movie(movies[rental.getMovieID()]);
     }
 
     function getMovieCost(rental) {
@@ -39,7 +49,7 @@ function statement(customerArg, movies) {
         let movie = findMovie(rental);
 
         // determine amount for each movie
-        switch (movie.type) {
+        switch (movie.getType()) {
             case "regular":
                 cost = 2;
                 if (rental.getDays() > 2) {
@@ -63,7 +73,7 @@ function statement(customerArg, movies) {
         let movie = findMovie(rental);
 
         // add bonus for a two day new release rental
-        return (movie.type === "new" && rental.getDays() > 2) ? 2 : 1;
+        return (movie.getType() === "new" && rental.getDays() > 2) ? 2 : 1;
     }
 
     function getTotalCost(customer) {
