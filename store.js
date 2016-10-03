@@ -25,6 +25,10 @@ Rental.prototype.getMovieID = function() {
 Rental.prototype.getMovie = function() {
     return this._movie;
 };
+Rental.prototype.getFrequentRenterPoints = function() {
+    // add bonus for a two day new release rental
+    return (this.getMovie().getType() === "new" && this.getDays() > 2) ? 2 : 1;
+};
 
 function Movie(data) {
     this._data = data;
@@ -69,12 +73,6 @@ function statement(customerArg, moviesAvailable) {
         return cost;
     }
 
-    function getFrequentRenterPoints(rental) {
-        let movie = rental.getMovie();
-        // add bonus for a two day new release rental
-        return (movie.getType() === "new" && rental.getDays() > 2) ? 2 : 1;
-    }
-
     function getTotalCost(customer) {
         let totalCost = 0;
         for (let rental of customer.getRentals()) {
@@ -86,7 +84,7 @@ function statement(customerArg, moviesAvailable) {
     function getTotalFrequentRentalPoints(customer) {
         let totalFrequentRenterPoints = 0;
         for (let rental of customer.getRentals()) {
-            totalFrequentRenterPoints += getFrequentRenterPoints(rental);
+            totalFrequentRenterPoints += rental.getFrequentRenterPoints();
         }
         return totalFrequentRenterPoints;
     }
