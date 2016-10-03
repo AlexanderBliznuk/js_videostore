@@ -1,24 +1,29 @@
 "use strict";
-function Customer(data) {
+function Customer(data, moviesAvailable) {
     this._data = data;
+    this._moviesAvailable = moviesAvailable;
 }
 Customer.prototype.getName = function() {
     return this._data.name;
 };
 Customer.prototype.getRentals = function() {
-    return this._data.rentals.map(function (rental) {
-        return new Rental(rental);
-    });
+    return this._data.rentals.map((function (rental) {
+        return new Rental(rental, this._moviesAvailable);
+    }).bind(this));
 };
 
-function Rental(data) {
+function Rental(data, moviesAvailable) {
     this._data = data;
+    this._movie = new Movie(moviesAvailable[this.getMovieID()]);
 }
 Rental.prototype.getDays = function() {
     return this._data.days;
 };
 Rental.prototype.getMovieID = function() {
     return this._data.movieID;
+};
+Rental.prototype.getMovie = function() {
+    return this._movie;
 };
 
 function Movie(data) {
@@ -31,23 +36,18 @@ Movie.prototype.getTitle = function() {
     return this._data.title;
 };
 
-function statement(customerArg, movies) {
-    let customer = new Customer(customerArg);
+function statement(customerArg, moviesAvailable) {
+    let customer = new Customer(customerArg, moviesAvailable);
     let result = `Rental Record for ${customer.getName()}\n`;
     for (let rental of customer.getRentals()) {
-        result += `\t${findMovie(rental).getTitle()}\t${getMovieCost(rental)}\n`;
+        result += `\t${rental.getMovie().getTitle()}\t${getMovieCost(rental)}\n`;
     }
 
     return addFooterLines(result);
 
-    function findMovie(rental) {
-        return new Movie(movies[rental.getMovieID()]);
-    }
-
     function getMovieCost(rental) {
         let cost = 0;
-        let movie = findMovie(rental);
-
+        let movie = rental.getMovie();
         // determine amount for each movie
         switch (movie.getType()) {
             case "regular":
@@ -70,8 +70,7 @@ function statement(customerArg, movies) {
     }
 
     function getFrequentRenterPoints(rental) {
-        let movie = findMovie(rental);
-
+        let movie = rental.getMovie();
         // add bonus for a two day new release rental
         return (movie.getType() === "new" && rental.getDays() > 2) ? 2 : 1;
     }
