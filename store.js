@@ -1,8 +1,18 @@
 "use strict";
+function Customer(data) {
+    this._data = data;
+}
+Customer.prototype.getName = function() {
+    return this._data.name;
+};
+Customer.prototype.getRentals = function() {
+    return this._data.rentals;
+};
 
-function statement(customer, movies) {
-    let result = `Rental Record for ${customer.name}\n`;
-    for (let rental of customer.rentals) {
+function statement(customerArg, movies) {
+    let customer = new Customer(customerArg);
+    let result = `Rental Record for ${customer.getName()}\n`;
+    for (let rental of customer.getRentals()) {
         result += `\t${findMovie(rental).title}\t${getMovieCost(rental)}\n`;
     }
 
@@ -46,7 +56,7 @@ function statement(customer, movies) {
 
     function getTotalCost(customer) {
         let totalCost = 0;
-        for (let rental of customer.rentals) {
+        for (let rental of customer.getRentals()) {
             totalCost += getMovieCost(rental);
         }
         return totalCost;
@@ -54,7 +64,7 @@ function statement(customer, movies) {
 
     function getTotalFrequentRentalPoints(customer) {
         let totalFrequentRenterPoints = 0;
-        for (let rental of customer.rentals) {
+        for (let rental of customer.getRentals()) {
             totalFrequentRenterPoints += getFrequentRenterPoints(rental);
         }
         return totalFrequentRenterPoints;
