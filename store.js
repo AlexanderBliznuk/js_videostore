@@ -11,6 +11,13 @@ Customer.prototype.getRentals = function() {
         return new Rental(rental, this._moviesAvailable);
     }).bind(this));
 };
+Customer.prototype.getTotalFrequentRentalPoints = function() {
+    let totalFrequentRenterPoints = 0;
+    for (let rental of this.getRentals()) {
+        totalFrequentRenterPoints += rental.getFrequentRenterPoints();
+    }
+    return totalFrequentRenterPoints;
+};
 
 function Rental(data, moviesAvailable) {
     this._data = data;
@@ -78,17 +85,9 @@ function statement(customerArg, moviesAvailable) {
         return totalCost;
     }
 
-    function getTotalFrequentRentalPoints(customer) {
-        let totalFrequentRenterPoints = 0;
-        for (let rental of customer.getRentals()) {
-            totalFrequentRenterPoints += rental.getFrequentRenterPoints();
-        }
-        return totalFrequentRenterPoints;
-    }
-
     function addFooterLines(msg) {
         msg += `Amount owed is ${getTotalCost(customer)}\n`;
-        msg += `You earned ${getTotalFrequentRentalPoints(customer)} frequent renter points\n`;
+        msg += `You earned ${customer.getTotalFrequentRentalPoints()} frequent renter points\n`;
         return msg;
     }
 }
